@@ -22,7 +22,7 @@ TEST CASE FOR NULL VALUES: Passed means that the dataframe has no null values. F
 
 How to use this library
 
-`from data_quality import DataQuality as dq`  
+`from data_quality import DataQualityTests as dq`  
 
 `#declare any dataframe`  
 

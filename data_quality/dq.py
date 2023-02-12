@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-class DataQuality():
+class DataQualityTests():
     """
     Initiate a data quality assessment class with (as of now) 4 test cases to check data quality
     """
