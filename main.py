@@ -7,3 +7,6 @@ df = sns.load_dataset("iris")
 dq.data_quality_check(df)
 
 #df.head()
+
+
+
