@@ -15,7 +15,7 @@ with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
 # This call to setup() does all the work
 setup(
     name="data-quality-tests",
-    version="0.1.4",
+    version="0.1.4.1",
     description="Data Quality Check Library",
     long_description=long_description,
     long_description_content_type="text/markdown",

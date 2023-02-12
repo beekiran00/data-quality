@@ -1,4 +1,4 @@
-from data_quality import DataQuality as dq
+from data_quality import DataQualityTests as dq
 import pandas as pd
 import seaborn as sns
 
