@@ -34,7 +34,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Operating System :: OS Independent"
     ],
-    packages=["data_quality"],
+    packages=["data_quality_tests"],
     include_package_data=True,
     install_requires=["pandas","numpy"]
 )
