@@ -116,4 +116,34 @@ class DataQuality():
         print("------------------------------------------------------------")
         print("[=================================================================]")
     
+    def outlier_columns(df):
+        """
+        A function that checks for outliers and outputs the columns that have outliers
+        
+        Input - data frame
+        Output - list of columns containing outliers
+        
+        """
+        
+        cols_list = df.select_dtypes(include=['int32','int64','float']).columns
+        outlier_truth_list =[]
+        for i in cols_list:
+            
+            q1 = df[i].quantile(0.25)
+            q3 = df[i].quantile(0.75)
+            iqr = q3-q1 #Interquartile range
+            fence_low  = q1-1.5*iqr
+            fence_high = q3+1.5*iqr
+            
+            if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
+                truth = 'False' #outliers
+                outlier_truth_list.append(truth)
+            else:
+                truth = 'True' #not outliers
+                outlier_truth_list.append(truth)
+        truth_dict = dict(zip(cols_list, outlier_truth_list))
+
+        filtered = [k for k, v in truth_dict.items() if v == 'False']
+        print(filtered)
+    
     

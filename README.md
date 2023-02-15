@@ -1,5 +1,3 @@
-# Project Descrption
-
 ## DATA QUALITY
 
 A library which acts as a test cases for dataframes. Simply pass in your dataframe after initial import, or at each stage of your EDA to check for data quality with one line of code.
@@ -25,7 +23,9 @@ TEST CASE FOR NULL VALUES: Passed means that the dataframe has no null values. F
 
 ## Installation
 
-```pip install data-quality-tests```
+```python
+pip install data-quality-tests
+```
 
 ## Updates & Changes
 
@@ -41,13 +41,23 @@ to the following:
 from data_quality_tests import DataQuality
 ```
 
+2. new function ```outlier_columns``` has been added in this update, which displays all the columns that have outliers.  
+*For use case, refer to the get started section*
 
 ## Get Started
 
-How to use this library
+How to use this library:
+
+### Data quality check
+
+The most basic usage of this library, here for simplifiction,  
+let's just se the iris dataset from seaborn library.
+
+You can use any dataset.
 
 ```python
 from data_quality_tests import DataQuality as dq
+import seaborn as sns
 
 #declare any dataframe
 
@@ -58,3 +68,18 @@ df = sns.load_dataset("iris")
 dq.data_quality_check(df)
 ```
 
+### Outlier columns
+
+Sometimes, the test case for outliers fails, this is because the dataset containes outliers.
+
+use ```outier_columns(df)``` function to display all the columns that have outliers.  
+
+*NOTE* *If the dataset does not have outlier columns, the output is an empty list.*
+
+
+```python
+
+# display columns that have outliers
+dq.outlier_columns(df)
+
+```
