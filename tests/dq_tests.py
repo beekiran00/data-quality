@@ -2,7 +2,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from data_quality import DataQualityTests
+from data_quality_tests import DataQuality
 
 
 import seaborn as sns
@@ -10,7 +10,7 @@ import seaborn as sns
 class DataQualityTestCases(unittest.TestCase):
 
     def setUp(self):
-        self.dq = DataQualityTests
+        self.dq = DataQuality
 
     def test_alpha(self):
         """test when df is passed and everythiong works"""
