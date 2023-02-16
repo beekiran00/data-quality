@@ -26,7 +26,8 @@ class DataQuality():
         1. Test for null values
         2. Test for duplicates
         3. Test for dtype matching
-        4. Test for outliers                  
+        4. Test for outliers
+        5. Test for column header whitespaces                  
     
         """      
         
@@ -113,6 +114,16 @@ class DataQuality():
         else:
             print("TEST CASE OUTLIERS: Passed")
         print("")
+
+        # TEST FOR COLUMN HEADER LEADING AND TRAILING SPACES
+        col_list = [x for x in df.columns if x.endswith(' ') or x.startswith(' ')]
+    
+        if len(col_list) == 0:
+            print("TEST CASE COLUMN HEADER WHITESPACES: Passed")
+        else:
+            print("TEST CASE COLUMN HEADER WHITESPACES: Failed")
+        print("")
+
         print("------------------------------------------------------------")
         print("[=================================================================]")
     
