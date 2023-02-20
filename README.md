@@ -7,6 +7,7 @@ The test cases include(as of now)
 2. check for duplicates
 3. check for dtype matching
 4. check for outliers
+5. check for whitespaces in column headers
 
 The test cases work as a Pass/Fail type, where Passed indicates, good data quality and Failed indicates bad data quality
 
@@ -43,6 +44,8 @@ from data_quality_tests import DataQuality
 
 2. new function ```outlier_columns``` has been added in this update, which displays all the columns that have outliers.  
 *For use case, refer to the get started section*
+
+3. ```data_quality_check``` now checks for column header whitespaces for leading and trailing.
 
 ## Get Started
 
