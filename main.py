@@ -8,6 +8,8 @@ dq.data_quality_check(df)
 
 dq.outlier_columns(df)
 
+dq.dtype_columns(df)
+
 #df.head()
 
 

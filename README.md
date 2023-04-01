@@ -47,6 +47,9 @@ from data_quality_tests import DataQuality
 
 3. ```data_quality_check``` now checks for column header whitespaces for leading and trailing.
 
+4. new function ```dtype_columns``` has been added in this update, which displays all the columns that failed data type matching.
+*For use case, refer the get started section*
+
 ## Get Started
 
 How to use this library:
@@ -85,4 +88,16 @@ use ```outier_columns(df)``` function to display all the columns that have outli
 # display columns that have outliers
 dq.outlier_columns(df)
 
+```
+
+### Data type columns
+
+When it is observed the test for dtype matching has failed, this is due to an error in the data type.
+For example, sometimes numbers are in the form of strings.
+
+use ```dtype_columns(df)``` function to display all the columns that failed data type matching.
+
+```python
+#display list of columns that failed dtype matching
+dq.dtype_columns(df)
 ```

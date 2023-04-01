@@ -37,11 +37,17 @@ class DataQualityTestCases(unittest.TestCase):
     
     def test_no_df_input_outlier_colmns(self):
 
-
         try:
             self.dq.outlier_columns()
         except:
             print("outlier_column takes 1 argument: None provided")
+    
+    def test_no_df_input_dtype_columns(self):
+        try:
+            self.dq.dtype_columns()
+        except:
+            print("dtype_columns takes 1 argument: None provided")
+
 
 if __name__ == '__main__':
     unittest.main()

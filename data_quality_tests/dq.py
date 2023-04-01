@@ -58,15 +58,21 @@ class DataQuality():
             print("TEST CASE DUPLICATE VALUES: Failed")
         else:
             print("TEST CASE DUPLICATE VALUES: Passed")
-        duplicate_sum = df.duplicated().sum()
+        #duplicate_sum = df.duplicated().sum()
         #print("Total number of duplicates: ", duplicate_sum)
         print("")
         
+
+
         # TEST For dtype matching
         
-        num_list = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
+        # num_list is checking whether the columns are numeric or not-
+        # a list of true and false where false is not number and true is number
+        num_col_list_bool = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
+        # col_list is a list of columns
         col_list = df.columns
-        index_cols = list(zip(num_list, col_list))
+        # index_cols is a list of tuples of the format - (bool,column_name) example - (False, 'booking_id')
+        index_cols = list(zip(num_col_list_bool, col_list))
         dtype_truth = []
         for i in index_cols:
             if i[0]==False:
@@ -89,10 +95,8 @@ class DataQuality():
         print("")
 
 
-        # TEST FOR OUTLIERS
-        
 
-        
+        # TEST FOR OUTLIERS
         cols_list = df.select_dtypes(include=['int32','int64','float']).columns
         outlier_truth_list =[]
         for i in cols_list:
@@ -115,6 +119,8 @@ class DataQuality():
             print("TEST CASE OUTLIERS: Passed")
         print("")
 
+
+
         # TEST FOR COLUMN HEADER LEADING AND TRAILING SPACES
         col_list = [x for x in df.columns if x.endswith(' ') or x.startswith(' ')]
     
@@ -126,7 +132,9 @@ class DataQuality():
 
         print("------------------------------------------------------------")
         print("[=================================================================]")
-    
+
+
+    # DISPLAY LIST OF OUTLIER COLUMNS
     def outlier_columns(df):
         """
         A function that checks for outliers and outputs the columns that have outliers
@@ -156,5 +164,56 @@ class DataQuality():
 
         filtered = [k for k, v in truth_dict.items() if v == 'False']
         print(filtered)
+
+    
+    def dtype_columns(df):
+        """
+        A Function that checks for data type matching and outputs the list of columns that fail dtype matching
+        Input - dataframe
+        Output - list of columns that failed the test caset
+        """
+
+        # dtype matching columns
+    
+        num_list = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
+        col_list = df.columns
+        index_cols = list(zip(num_list, col_list))
+
+        dtype_truth = []
+        dtype_column = []
+        for i in index_cols:
+            if i[0]==False:
+                if df[i[1]].isna().any() == True:
+                    pass
+                elif any(df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
+                    my_truth = 'False'
+                    dtype_truth.append(my_truth)
+                    dtype_column.append(i[1])
+                else:
+                    my_truth = 'True'
+                    dtype_truth.append(my_truth)
+            else:
+                my_truth = 'True'
+                dtype_truth.append(my_truth)
+                
+        if len(dtype_column) != 0:
+            print(dtype_column)
+        else:
+            print('THE COLUMNS AND DATA TYPES MATCH')
+
+    """def duplicated_columns(df):
+  
+        A function to display the columns of those which have duplicate values
+        Input - Dataframe
+        Output - List of columns which have duplicate values
+     
+        """
+
+        
+
+
+    
+
+
     
     
