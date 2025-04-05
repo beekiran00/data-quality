@@ -26,24 +26,24 @@ class DataQuality():
         1. Test for null values
         2. Test for duplicates
         3. Test for dtype matching
-        4. Test for outliers
-        5. Test for column header whitespaces                  
+        4. Test for outliers - depricated
+        5. Test for column header whitespaces               
     
         """      
         
         # TEST FOR NULL VALUES
         # if null values exist -> condition = true then test failed, else false
         
-        print("[=================================================================]")
-        print("")
         
         #print("TEST FOR NULL VALUES:")
-        print("")
+        print("Note:")
+        print("Fail - Failed for test case due to existing condition.")
+        print("Pass - Clear of condition.")
         
         if df.isnull().values.any() == True:
-            print("TEST CASE NULL VALUES: Failed")
+            print("Test Case Null Values: Fail")
         else:
-            print('TEST CASE NULL VALUES: Passed')
+            print('Test Case Null Values: Pass')
             
         null_sum = df.isnull().sum().sum()
         
@@ -55,9 +55,9 @@ class DataQuality():
         # TEST FOR DUPLICATES
         
         if df.duplicated().any() == True:
-            print("TEST CASE DUPLICATE VALUES: Failed")
+            print("Test Case Duplicated Values: Fail")
         else:
-            print("TEST CASE DUPLICATE VALUES: Passed")
+            print("Test Case Duplicated Values: Pass")
         #duplicate_sum = df.duplicated().sum()
         #print("Total number of duplicates: ", duplicate_sum)
         print("")
@@ -89,35 +89,35 @@ class DataQuality():
                 dtype_truth.append(my_truth)
         fail = "False"
         if fail in dtype_truth:
-            print('TEST CASE DTYPE MATCHING: Failed')
+            print('Test Case Column Data Type Matches Values In Column: Fail')
         else:
-            print('TEST CASE DTYPE MATCHING: Passed')
+            print('Test Case Column Data Type Matches Values In Column: Pass')
         print("")
 
 
 
-        # TEST FOR OUTLIERS
-        cols_list = df.select_dtypes(include=['int32','int64','float']).columns
-        outlier_truth_list =[]
-        for i in cols_list:
+        # # TEST FOR OUTLIERS
+        # cols_list = df.select_dtypes(include=['int32','int64','float']).columns
+        # outlier_truth_list =[]
+        # for i in cols_list:
             
-            q1 = df[i].quantile(0.25)
-            q3 = df[i].quantile(0.75)
-            iqr = q3-q1 #Interquartile range
-            fence_low  = q1-1.5*iqr
-            fence_high = q3+1.5*iqr
+        #     q1 = df[i].quantile(0.25)
+        #     q3 = df[i].quantile(0.75)
+        #     iqr = q3-q1 #Interquartile range
+        #     fence_low  = q1-1.5*iqr
+        #     fence_high = q3+1.5*iqr
             
-            if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
-                truth = 'False'
-                outlier_truth_list.append(truth)
-            else:
-                truth = 'True'
-                outlier_truth_list.append(truth)
-        if any('False' == 'False' for x in outlier_truth_list):
-            print("TEST CASE OUTLIERS: Failed")
-        else:
-            print("TEST CASE OUTLIERS: Passed")
-        print("")
+        #     if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
+        #         truth = 'False'
+        #         outlier_truth_list.append(truth)
+        #     else:
+        #         truth = 'True'
+        #         outlier_truth_list.append(truth)
+        # if any('False' == 'False' for x in outlier_truth_list):
+        #     print("TEST CASE OUTLIERS: Failed")
+        # else:
+        #     print("TEST CASE OUTLIERS: Passed")
+        # print("")
 
 
 
@@ -125,89 +125,87 @@ class DataQuality():
         col_list = [x for x in df.columns if x.endswith(' ') or x.startswith(' ')]
     
         if len(col_list) == 0:
-            print("TEST CASE COLUMN HEADER WHITESPACES: Passed")
+            print("Test Case Column Header Whitespaces: Pass")
         else:
-            print("TEST CASE COLUMN HEADER WHITESPACES: Failed")
+            print("Test Case Column Header Whitespaces: Fail")
         print("")
 
-        print("------------------------------------------------------------")
-        print("[=================================================================]")
 
 
-    # DISPLAY LIST OF OUTLIER COLUMNS
-    def outlier_columns(df):
-        """
-        A function that checks for outliers and outputs the columns that have outliers
+    # # DISPLAY LIST OF OUTLIER COLUMNS
+    # def outlier_columns(df):
+    #     """
+    #     A function that checks for outliers and outputs the columns that have outliers
         
-        Input - data frame
-        Output - list of columns containing outliers
+    #     Input - data frame
+    #     Output - list of columns containing outliers
         
-        """
+    #     """
         
-        cols_list = df.select_dtypes(include=['int32','int64','float']).columns
-        outlier_truth_list =[]
-        for i in cols_list:
+    #     cols_list = df.select_dtypes(include=['int32','int64','float']).columns
+    #     outlier_truth_list =[]
+    #     for i in cols_list:
             
-            q1 = df[i].quantile(0.25)
-            q3 = df[i].quantile(0.75)
-            iqr = q3-q1 #Interquartile range
-            fence_low  = q1-1.5*iqr
-            fence_high = q3+1.5*iqr
+    #         q1 = df[i].quantile(0.25)
+    #         q3 = df[i].quantile(0.75)
+    #         iqr = q3-q1 #Interquartile range
+    #         fence_low  = q1-1.5*iqr
+    #         fence_high = q3+1.5*iqr
             
-            if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
-                truth = 'False' #outliers
-                outlier_truth_list.append(truth)
-            else:
-                truth = 'True' #not outliers
-                outlier_truth_list.append(truth)
-        truth_dict = dict(zip(cols_list, outlier_truth_list))
+    #         if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
+    #             truth = 'False' #outliers
+    #             outlier_truth_list.append(truth)
+    #         else:
+    #             truth = 'True' #not outliers
+    #             outlier_truth_list.append(truth)
+    #     truth_dict = dict(zip(cols_list, outlier_truth_list))
 
-        filtered = [k for k, v in truth_dict.items() if v == 'False']
-        print(filtered)
+    #     filtered = [k for k, v in truth_dict.items() if v == 'False']
+    #     print(filtered)
 
     
-    def dtype_columns(df):
-        """
-        A Function that checks for data type matching and outputs the list of columns that fail dtype matching
-        Input - dataframe
-        Output - list of columns that failed the test caset
-        """
+    # def dtype_columns(df):
+    #     """
+    #     A Function that checks for data type matching and outputs the list of columns that fail dtype matching
+    #     Input - dataframe
+    #     Output - list of columns that failed the test caset
+    #     """
 
-        # dtype matching columns
+    #     # dtype matching columns
     
-        num_list = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
-        col_list = df.columns
-        index_cols = list(zip(num_list, col_list))
+    #     num_list = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
+    #     col_list = df.columns
+    #     index_cols = list(zip(num_list, col_list))
 
-        dtype_truth = []
-        dtype_column = []
-        for i in index_cols:
-            if i[0]==False:
-                if df[i[1]].isna().any() == True:
-                    pass
-                elif any(df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
-                    my_truth = 'False'
-                    dtype_truth.append(my_truth)
-                    dtype_column.append(i[1])
-                else:
-                    my_truth = 'True'
-                    dtype_truth.append(my_truth)
-            else:
-                my_truth = 'True'
-                dtype_truth.append(my_truth)
+    #     dtype_truth = []
+    #     dtype_column = []
+    #     for i in index_cols:
+    #         if i[0]==False:
+    #             if df[i[1]].isna().any() == True:
+    #                 pass
+    #             elif any(df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
+    #                 my_truth = 'False'
+    #                 dtype_truth.append(my_truth)
+    #                 dtype_column.append(i[1])
+    #             else:
+    #                 my_truth = 'True'
+    #                 dtype_truth.append(my_truth)
+    #         else:
+    #             my_truth = 'True'
+    #             dtype_truth.append(my_truth)
                 
-        if len(dtype_column) != 0:
-            print(dtype_column)
-        else:
-            print('THE COLUMNS AND DATA TYPES MATCH')
+    #     if len(dtype_column) != 0:
+    #         print(dtype_column)
+    #     else:
+    #         print('THE COLUMNS AND DATA TYPES MATCH')
 
-    """def duplicated_columns(df):
+    # """def duplicated_columns(df):
   
-        A function to display the columns of those which have duplicate values
-        Input - Dataframe
-        Output - List of columns which have duplicate values
+    #     A function to display the columns of those which have duplicate values
+    #     Input - Dataframe
+    #     Output - List of columns which have duplicate values
      
-        """
+    #     """
 
         
 

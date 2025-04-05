@@ -20,12 +20,12 @@ class DataQualityTestCases(unittest.TestCase):
         result = self.dq.data_quality_check(df)
         return result
     
-    def test_outlier_columns(self):
-        """test whenn df is passed to outlier columns"""
-        df = sns.load_dataset("iris")
+    # def test_outlier_columns(self):
+    #     """test whenn df is passed to outlier columns"""
+    #     df = sns.load_dataset("iris")
 
-        result = self.dq.outlier_columns(df)
-        return result
+    #     result = self.dq.outlier_columns(df)
+    #     return result
 
     def test_no_df_input(self):
 
@@ -35,18 +35,18 @@ class DataQualityTestCases(unittest.TestCase):
         except:
             print("data_quality_check takes 1 argument: None provided")
     
-    def test_no_df_input_outlier_colmns(self):
+    # def test_no_df_input_outlier_colmns(self):
 
-        try:
-            self.dq.outlier_columns()
-        except:
-            print("outlier_column takes 1 argument: None provided")
+    #     try:
+    #         self.dq.outlier_columns()
+    #     except:
+    #         print("outlier_column takes 1 argument: None provided")
     
-    def test_no_df_input_dtype_columns(self):
-        try:
-            self.dq.dtype_columns()
-        except:
-            print("dtype_columns takes 1 argument: None provided")
+    # def test_no_df_input_dtype_columns(self):
+    #     try:
+    #         self.dq.dtype_columns()
+    #     except:
+    #         print("dtype_columns takes 1 argument: None provided")
 
 
 if __name__ == '__main__':
