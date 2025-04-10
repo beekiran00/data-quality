@@ -42,13 +42,11 @@ to the following:
 from data_quality_tests import DataQuality
 ```
 
-2. new function ```outlier_columns``` has been added in this update, which displays all the columns that have outliers.  
+2. new function ```get_row_count()``` has been added in this update, which displays number of rows in a dataframe.  
 *For use case, refer to the get started section*
 
 3. ```data_quality_check``` now checks for column header whitespaces for leading and trailing.
 
-4. new function ```dtype_columns``` has been added in this update, which displays all the columns that failed data type matching.
-*For use case, refer the get started section*
 
 ## Get Started
 
@@ -72,4 +70,6 @@ df = sns.load_dataset("iris")
 #pass the dataframe as below  
 
 dq.data_quality_check(df)
+
+dq.get_row_count(df)
 ```

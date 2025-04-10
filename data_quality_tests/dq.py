@@ -9,6 +9,14 @@ class DataQuality():
 
     def __init__(self, df):
         self.df = df
+
+
+    def get_row_count(df):
+        """
+        Returns the count of rows for the user to use
+        """
+        return len(df)
+    
     def data_quality_check(df):
         
         """
@@ -39,13 +47,14 @@ class DataQuality():
         print("Note:")
         print("Fail - Failed for test case due to existing condition.")
         print("Pass - Clear of condition.")
-        
+        print("")
+        print("Number of rows: ", len(df))
+        print("")
         if df.isnull().values.any() == True:
             print("Test Case Null Values: Fail")
         else:
             print('Test Case Null Values: Pass')
             
-        null_sum = df.isnull().sum().sum()
         
         #print("Total number of null values: ",null_sum)
         print("")
@@ -93,32 +102,6 @@ class DataQuality():
         else:
             print('Test Case Column Data Type Matches Values In Column: Pass')
         print("")
-
-
-
-        # # TEST FOR OUTLIERS
-        # cols_list = df.select_dtypes(include=['int32','int64','float']).columns
-        # outlier_truth_list =[]
-        # for i in cols_list:
-            
-        #     q1 = df[i].quantile(0.25)
-        #     q3 = df[i].quantile(0.75)
-        #     iqr = q3-q1 #Interquartile range
-        #     fence_low  = q1-1.5*iqr
-        #     fence_high = q3+1.5*iqr
-            
-        #     if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
-        #         truth = 'False'
-        #         outlier_truth_list.append(truth)
-        #     else:
-        #         truth = 'True'
-        #         outlier_truth_list.append(truth)
-        # if any('False' == 'False' for x in outlier_truth_list):
-        #     print("TEST CASE OUTLIERS: Failed")
-        # else:
-        #     print("TEST CASE OUTLIERS: Passed")
-        # print("")
-
 
 
         # TEST FOR COLUMN HEADER LEADING AND TRAILING SPACES

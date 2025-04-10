@@ -35,6 +35,22 @@ class DataQualityTestCases(unittest.TestCase):
         except:
             print("data_quality_check takes 1 argument: None provided")
     
+    def test_no_df_input_row_count(self):
+
+        try:
+            self.dq.get_row_count()
+        except:
+            print("get_row_count takes 1 argument: None provided")
+    
+    def test_get_row_count(self):
+        """test when df is passed and everythiong works"""
+
+        df = sns.load_dataset("iris")
+
+        result = self.dq.get_row_count(df)
+        return result
+
+    
     # def test_no_df_input_outlier_colmns(self):
 
     #     try:

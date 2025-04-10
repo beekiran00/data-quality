@@ -6,9 +6,10 @@ df = sns.load_dataset("iris")
 
 dq.data_quality_check(df)
 
-dq.outlier_columns(df)
+rows = dq.get_row_count(df)
+print(rows)
 
-dq.dtype_columns(df)
+#dq.dtype_columns(df)
 
 #df.head()
 
