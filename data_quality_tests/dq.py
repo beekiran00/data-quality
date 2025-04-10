@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
+import json
+import datetime
+from typing import Dict
 
 
-class DataQuality():
+class DataQuality:
     """
     Initiate a data quality assessment class with (as of now) 4 test cases to check data quality
     """
@@ -10,14 +13,173 @@ class DataQuality():
     def __init__(self, df):
         self.df = df
 
+    def generate_schema(self) -> Dict:
+        """
+        Generate a schema definition from the DataFrame
+        without statistical information
+            
+        Returns:
+        --------
+        dict
+            A schema definition including column names, types, and basic properties
+        """
+        schema = {
+            "version": 1,
+            "creation_date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "row_count": self.get_row_count(),
+            "column_count": len(self.df.columns),
+            "columns": {},
+            "schema_fingerprint": ""
+        }
+        
+        for column in self.df.columns:
+            col_data = self.df[column]
+            dtype_name = str(col_data.dtype)
+            
+            # Determine nullability and unique counts
+            null_count = col_data.isna().sum()
+            unique_count = col_data.nunique()
+            
+            # Basic column properties only
+            schema["columns"][column] = {
+                "dtype": dtype_name,
+                "nullable": bool(null_count > 0),
+                "null_count": int(null_count),
+                "unique_count": int(unique_count)
+            }
+        
+        # Create a schema fingerprint for quick comparison (without hashlib)
+        column_fingerprints = []
+        for col_name in sorted(schema["columns"].keys()):
+            col_info = schema["columns"][col_name]
+            column_fingerprints.append(
+                f"{col_name}:{col_info['dtype']}:{col_info['nullable']}"
+            )
+        
+        # Join all column fingerprints to create schema fingerprint
+        schema["schema_fingerprint"] = "|".join(column_fingerprints)
+        
+        return schema
+    
+    def print_schema(self) -> None:
+        """
+        Generate and print a human-readable schema of the DataFrame
+        without statistical information
+        """
+        schema = self.generate_schema()
+        
+        print("\n===== DATAFRAME SCHEMA =====")
+        print(f"Created: {schema['creation_date']}")
+        print(f"Rows: {schema['row_count']}")
+        print(f"Columns: {schema['column_count']}")
+        print(f"Schema Fingerprint: {schema['schema_fingerprint'][:50]}...")  # Show truncated fingerprint
+        print("\n=== COLUMNS ===")
+        
+        # Column type counts for summary
+        type_counts = {}
+        for col_info in schema["columns"].values():
+            dtype = col_info["dtype"]
+            if dtype not in type_counts:
+                type_counts[dtype] = 0
+            type_counts[dtype] += 1
+            
+        # Print type summary
+        print("Type Distribution:")
+        for dtype, count in type_counts.items():
+            print(f"  - {dtype}: {count} columns")
+        
+        print("\nDetailed Column Information:")
+        for col_name, col_info in schema["columns"].items():
+            print(f"  • {col_name}")
+            print(f"    Type: {col_info['dtype']}")
+            print(f"    Nullable: {'Yes' if col_info['nullable'] else 'No'}")
+            print(f"    Null Count: {col_info['null_count']}")
+            print(f"    Unique Values: {col_info['unique_count']}")
 
-    def get_row_count(df):
+    
+    def save_schema_to_file(self) -> None:
+
+        """
+        Generate schema and save it to a JSON file
+        
+        Parameters:
+        -----------
+        file_path : str
+            Path where to save the schema JSON file
+        """
+        schema = self.generate_schema()
+        
+        try:
+            with open('/Users/bhanukiran/Desktop/data-quality/test.json', 'w') as file:
+                json.dump(schema, file, indent=2)
+            print(f"Schema saved to {'/Users/bhanukiran/Desktop/data-quality/test.json'}")
+        except Exception as e:
+            print(f"Error saving schema: {e}")
+
+    def compare_with_schema(self, other_schema: Dict) -> Dict:
+        """
+        Compare current DataFrame schema with another schema
+        
+        Parameters:
+        -----------
+        other_schema : dict
+            Another schema to compare against
+            
+        Returns:
+        --------
+        dict
+            Differences between the schemas
+        """
+        current_schema = self.generate_schema()
+        
+        if current_schema["schema_fingerprint"] == other_schema.get("schema_fingerprint", ""):
+            return {"status": "Schemas are identical"}
+            
+        differences = {
+            "new_columns": [],
+            "missing_columns": [],
+            "type_changes": [],
+            "nullable_changes": []
+        }
+            
+        # Check for new and missing columns
+        current_cols = set(current_schema["columns"].keys())
+        other_cols = set(other_schema.get("columns", {}).keys())
+            
+        differences["new_columns"] = list(current_cols - other_cols)
+        differences["missing_columns"] = list(other_cols - current_cols)
+            
+        # Check common columns for changes
+        common_columns = current_cols.intersection(other_cols)
+        for column in common_columns:
+            current_col = current_schema["columns"][column]
+            other_col = other_schema["columns"][column]
+                
+            # Check for type changes
+            if current_col["dtype"] != other_col["dtype"]:
+                differences["type_changes"].append({
+                    "column": column,
+                    "current_type": current_col["dtype"],
+                    "other_type": other_col["dtype"]
+                })
+                    
+            # Check for nullable changes
+            if current_col["nullable"] != other_col["nullable"]:
+                differences["nullable_changes"].append({
+                    "column": column,
+                    "current_nullable": current_col["nullable"],
+                    "other_nullable": other_col["nullable"]
+                })
+                
+        return differences
+
+    def get_row_count(self) -> int:
         """
         Returns the count of rows for the user to use
         """
-        return len(df)
+        return len(self.df)
     
-    def data_quality_check(df):
+    def data_quality_check(self):
         
         """
         
@@ -48,9 +210,9 @@ class DataQuality():
         print("Fail - Failed for test case due to existing condition.")
         print("Pass - Clear of condition.")
         print("")
-        print("Number of rows: ", len(df))
+        print("Number of rows: ", self.get_row_count())
         print("")
-        if df.isnull().values.any() == True:
+        if self.df.isnull().values.any() == True:
             print("Test Case Null Values: Fail")
         else:
             print('Test Case Null Values: Pass')
@@ -63,7 +225,7 @@ class DataQuality():
         
         # TEST FOR DUPLICATES
         
-        if df.duplicated().any() == True:
+        if self.df.duplicated().any() == True:
             print("Test Case Duplicated Values: Fail")
         else:
             print("Test Case Duplicated Values: Pass")
@@ -77,17 +239,17 @@ class DataQuality():
         
         # num_list is checking whether the columns are numeric or not-
         # a list of true and false where false is not number and true is number
-        num_col_list_bool = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
+        num_col_list_bool = self.df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
         # col_list is a list of columns
-        col_list = df.columns
+        col_list = self.df.columns
         # index_cols is a list of tuples of the format - (bool,column_name) example - (False, 'booking_id')
         index_cols = list(zip(num_col_list_bool, col_list))
         dtype_truth = []
         for i in index_cols:
             if i[0]==False:
-                if df[i[1]].isna().any() == True:
+                if self.df[i[1]].isna().any() == True:
                     pass
-                elif any(df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
+                elif any(self.df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
                     my_truth = 'False'
                     dtype_truth.append(my_truth)
                 else:
@@ -105,7 +267,7 @@ class DataQuality():
 
 
         # TEST FOR COLUMN HEADER LEADING AND TRAILING SPACES
-        col_list = [x for x in df.columns if x.endswith(' ') or x.startswith(' ')]
+        col_list = [x for x in self.df.columns if x.endswith(' ') or x.startswith(' ')]
     
         if len(col_list) == 0:
             print("Test Case Column Header Whitespaces: Pass")
@@ -115,80 +277,7 @@ class DataQuality():
 
 
 
-    # # DISPLAY LIST OF OUTLIER COLUMNS
-    # def outlier_columns(df):
-    #     """
-    #     A function that checks for outliers and outputs the columns that have outliers
-        
-    #     Input - data frame
-    #     Output - list of columns containing outliers
-        
-    #     """
-        
-    #     cols_list = df.select_dtypes(include=['int32','int64','float']).columns
-    #     outlier_truth_list =[]
-    #     for i in cols_list:
-            
-    #         q1 = df[i].quantile(0.25)
-    #         q3 = df[i].quantile(0.75)
-    #         iqr = q3-q1 #Interquartile range
-    #         fence_low  = q1-1.5*iqr
-    #         fence_high = q3+1.5*iqr
-            
-    #         if len(df.loc[(df[i] > fence_low) & (df[i] < fence_high)]) > 0:
-    #             truth = 'False' #outliers
-    #             outlier_truth_list.append(truth)
-    #         else:
-    #             truth = 'True' #not outliers
-    #             outlier_truth_list.append(truth)
-    #     truth_dict = dict(zip(cols_list, outlier_truth_list))
-
-    #     filtered = [k for k, v in truth_dict.items() if v == 'False']
-    #     print(filtered)
-
-    
-    # def dtype_columns(df):
-    #     """
-    #     A Function that checks for data type matching and outputs the list of columns that fail dtype matching
-    #     Input - dataframe
-    #     Output - list of columns that failed the test caset
-    #     """
-
-    #     # dtype matching columns
-    
-    #     num_list = df.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all()).to_list()
-    #     col_list = df.columns
-    #     index_cols = list(zip(num_list, col_list))
-
-    #     dtype_truth = []
-    #     dtype_column = []
-    #     for i in index_cols:
-    #         if i[0]==False:
-    #             if df[i[1]].isna().any() == True:
-    #                 pass
-    #             elif any(df[i[1]].str.contains(r'\b.*[a-zA-Z]+.*\b')) == False:
-    #                 my_truth = 'False'
-    #                 dtype_truth.append(my_truth)
-    #                 dtype_column.append(i[1])
-    #             else:
-    #                 my_truth = 'True'
-    #                 dtype_truth.append(my_truth)
-    #         else:
-    #             my_truth = 'True'
-    #             dtype_truth.append(my_truth)
-                
-    #     if len(dtype_column) != 0:
-    #         print(dtype_column)
-    #     else:
-    #         print('THE COLUMNS AND DATA TYPES MATCH')
-
-    # """def duplicated_columns(df):
-  
-    #     A function to display the columns of those which have duplicate values
-    #     Input - Dataframe
-    #     Output - List of columns which have duplicate values
-     
-    #     """
+ 
 
         
 

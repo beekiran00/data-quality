@@ -1,2 +1,6 @@
 pandas
 numpy
+json
+datetime
+Dict
+typing
