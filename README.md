@@ -51,6 +51,8 @@ pip install data-quality-tests
 
 6. ```save_schema_to_file()``` saves the current dataframe schema to a file. The name of the dataframe is the variable name you give to the dataframe. Default value is "dataframe"
 
+7. ```compare_with_schema(reference_schema)``` compares a current schema with already existing schema of your dataframe to check for schema drift.
+
 
 ## Get Started
 
