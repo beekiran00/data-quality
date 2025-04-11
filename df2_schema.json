@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "creation_date": "2025-04-11 08:21:51",
+  "row_count": 5,
+  "column_count": 4,
+  "columns": {
+    "A": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 5
+    },
+    "B": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 2
+    },
+    "C": {
+      "dtype": "object",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 5
+    },
+    "D": {
+      "dtype": "datetime64[ns]",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 5
+    }
+  },
+  "schema_fingerprint": "A:float64:False|B:float64:False|C:object:False|D:datetime64[ns]:False"
+}

@@ -3,6 +3,9 @@ import numpy as np
 import json
 import datetime
 from typing import Dict
+import inspect
+import gc
+import os
 
 
 class DataQuality:
@@ -98,23 +101,61 @@ class DataQuality:
 
     
     def save_schema_to_file(self) -> None:
-
         """
-        Generate schema and save it to a JSON file
-        
-        Parameters:
-        -----------
-        file_path : str
-            Path where to save the schema JSON file
+        Generate schema and automatically save it to a JSON file in the current directory
+        using the DataFrame name. Checks for existing schema files and offers
+        version update if the same schema name is found.
         """
         schema = self.generate_schema()
+
+        # Try to determine DataFrame name
+        df_name = "dataframe"  # Default name
+
+        # Look for variable names in parent frames - safer approach
+
+        # Check all variables in caller's frame
+        frame = inspect.currentframe().f_back
+        if frame:
+            for var_name, var_val in frame.f_locals.items():
+                if isinstance(var_val, pd.DataFrame) and var_val is self.df:
+                    df_name = var_name
+                    break
+                
+        # Create filename
+        file_name = f"{df_name}_schema.json"
+
+        # Check if file already exists
         
-        try:
-            with open('/Users/bhanukiran/Desktop/data-quality/test.json', 'w') as file:
-                json.dump(schema, file, indent=2)
-            print(f"Schema saved to {'/Users/bhanukiran/Desktop/data-quality/test.json'}")
-        except Exception as e:
-            print(f"Error saving schema: {e}")
+        if os.path.exists(file_name):
+            try:
+                with open(file_name, 'r') as file:
+                    existing_schema = json.load(file)
+
+                # If schema exists, ask user if they want to update
+                user_response = input(f"Schema file '{file_name}' already exists. Update with version {existing_schema.get('version', 1) + 1}? (y/n): ")
+
+                if user_response.lower() == 'y':
+                    # Update version and save
+                    schema['version'] = existing_schema.get('version', 1) + 1
+                    with open(file_name, 'w') as file:
+                        json.dump(schema, file, indent=2)
+                    print(f"Schema updated and saved to {file_name} (version {schema['version']})")
+                else:
+                    print("Schema update cancelled.")
+            except Exception as e:
+                print(f"Error reading existing schema: {e}")
+                print("Saving as new schema...")
+                with open(file_name, 'w') as file:
+                    json.dump(schema, file, indent=2)
+                print(f"Schema saved to {file_name}")
+        else:
+            # No existing file, save directly
+            try:
+                with open(file_name, 'w') as file:
+                    json.dump(schema, file, indent=2)
+                print(f"Schema saved to {file_name}")
+            except Exception as e:
+                print(f"Error saving schema: {e}")
 
     def compare_with_schema(self, other_schema: Dict) -> Dict:
         """

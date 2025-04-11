@@ -49,7 +49,7 @@ pip install data-quality-tests
 
 5. ```print_schema()``` prints the schema of a dataframe
 
-6. ```save_schema_to_file()``` saves the current dataframe schema to a file. **You have to create a file and use it's path.**
+6. ```save_schema_to_file()``` saves the current dataframe schema to a file. The name of the dataframe is the variable name you give to the dataframe. Default value is "dataframe"
 
 
 ## Get Started
@@ -64,28 +64,41 @@ let's just se the iris dataset from seaborn library as df. And to compare it to 
 You can use any dataset.
 
 ```python
+
+
 from data_quality_tests import DataQuality as dq
 import pandas as pd
 import seaborn as sns
 import json
 
-df = sns.load_dataset("iris")
+# import two datasets
+df = sns.load_dataset("iris") 
+#generate this dataset
 df2 = pd.util.testing.makeMixedDataFrame()
 
+# initialise the Module
 quality = dq(df)
 change = dq(df2)
 
+#get row count
 rows = quality.get_row_count()
 print(rows)
 print("")
+# check data quality
 quality.data_quality_check()
 print("")
+# generate the schema of df passed in the quality variable
 quality.generate_schema()
 print("")
+# print schema
 quality.print_schema()
 print("")
-quality.save_schema_to_file()
+# save schema
+change.save_schema_to_file()
 print("")
+# Compare schema drift
+## after you run the save_schema_to_file function then use the saved schema.json file
+## test.json is iris dataset. and change is new dataset created
 with open('test.json', 'r') as f:
     reference_schema = json.load(f)
 diff = change.compare_with_schema(reference_schema)
@@ -94,4 +107,10 @@ if diff.get("status") != "Schemas are identical":
     print(diff)
 else:
     print("Schema is same")
+
+#dq.dtype_columns(df)
+
+#df.head()
+
+
 ```

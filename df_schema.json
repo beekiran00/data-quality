@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "creation_date": "2025-04-11 08:27:18",
+  "row_count": 150,
+  "column_count": 5,
+  "columns": {
+    "sepal_length": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 35
+    },
+    "sepal_width": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 23
+    },
+    "petal_length": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 43
+    },
+    "petal_width": {
+      "dtype": "float64",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 22
+    },
+    "species": {
+      "dtype": "object",
+      "nullable": false,
+      "null_count": 0,
+      "unique_count": 3
+    }
+  },
+  "schema_fingerprint": "petal_length:float64:False|petal_width:float64:False|sepal_length:float64:False|sepal_width:float64:False|species:object:False"
+}
